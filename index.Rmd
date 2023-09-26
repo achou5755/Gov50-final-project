@@ -1,6 +1,6 @@
 ---
 title: "Gov 50 Final Project"
-author: "Your Name Here"
+author: "Alex Chou"
 description: "My final project"
 output:
   distill::distill_article:
@@ -11,4 +11,4 @@ output:
 
 ## Project thoughts
 
-I am interested in exploring data related to...
+I am interested in exploring data related to the healthcare industry. For example, I would be curious to learn more about trends on non-profit vs for-profit hospitals over the years, or the number of physicians (and specialists) in the US military. It would also be interesting to investigate access to healthcare: has the number of hospitals in rural regions increased?
