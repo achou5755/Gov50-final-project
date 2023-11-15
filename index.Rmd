@@ -15,17 +15,16 @@ Do children who spend an average of more than 2 hours on screens daily have lowe
 
 
 ```{r}
+
 library(tidyverse)
 library(ggplot2)
 library(dplyr)
 
 file <- read.csv("Screentime_v_Mental_Health_Dataset.csv")
-file
 
-screen_time <- c("Less than 1 hour", "1 hour", "2 hours", "3 hours", 
-                      "4 or more hours")
+screen_time <- c("Less than 1 hour", "1 hour", "2 hours", "3 hours", "4 or more hours")
 
-filtered_data <- file |>
+screen_time_v_mental_health <- file |>
   mutate(
     treatment = if_else(Mental.Health.Treatment == "Needs Treatment", 1, 0)
   ) |>
@@ -39,11 +38,23 @@ filtered_data <- file |>
        title = "Screen Time Impact on Mental Health",
        source = "National Survey of Children’s Health (NSCH), 2020")
   
-
-filtered_data
+screen_time_v_mental_health
 
 ```
 
+```{r}
 
+screen_time_gender_v_mental_health <- file |>
+  mutate(
+    treatment = if_else(Mental.Health.Treatment == "Needs Treatment", 1, 0)
+  ) |>
+  select(Screentime, Sex, treatment) |>
+  group_by(Screentime, Sex) |>
+  summarize(treatment_mean = mean(treatment, na.rm = TRUE))
 
+screen_time_gender_v_mental_health
+```
 
+The graph clearly shows that adolescents who spend a greater amount of time on their screens are more likely to seek treatment for their mental health. In fact, there is a clear upward trend: as the amount of screen time increases, the likelihood that a given individual has sought treatment increases as well. 
+
+When we examine the second table that takes into account gender, there are slight deviations between male and female children. For shorter screen times (such as less than one hour, 1 hour, and 2 hours), boys are more likely to seek treatment than their female counterparts that have the same screentime. On the other hand for longer screen times (such as 3 hours and 4 hours or more), girls are more likely to seek treatment than their male counterparts.
