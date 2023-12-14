@@ -8,17 +8,13 @@ output:
 ---
 
 
+## INTRODUCTION
 
-## Project thoughts
-
-INTRODUCTION
-
-
-Does screen time affect the mental health of children? The rise of social media apps like Instagram, TikTok, and Snapchat in the 21st century prematurely exposes school-age children to unprecedented content. I hypothesize that the more time children spend on their screens, the worse their mental health. On their screens, youth are exposed to a variety of triggers, including breaking news about climate change or politics, posts from friends exploring the world, and media produced by content creators who exemplify beauty standards. These conduce feelings of despair, FOMO, or self-hatred. 
+Does screen time affect the mental health of children? The rise of social media apps like Instagram, TikTok, and Snapchat in the 21st century prematurely exposes school-age children to unprecedented content. I hypothesize that the more time children spend on their screens, the worse their mental health. We can also examine this effect in the context of age and gender. For example, girls (especially teenagers) may be more likely to seek mental health treatment as a result of excessive screen time: on their screens, youth are exposed to a variety of triggers, including breaking news about climate change or politics, posts from friends exploring the world, and media produced by content creators who exemplify beauty standards. These conduce feelings of despair, FOMO, or self-hatred. 
 
 Adolescents remain a demographic most susceptible to experiencing mental health disorders like depression and anxiety. According to the CDC, suicide is one of the five leading causes of death among individuals aged 12 - 19. Should screentime be a significant factor that contributes to this phenomena, there is a clear need for society to peel teenagers from their screen. Currently, educational policies embrace technology: many students in high school and middle school are expected to conduct research using internet resources and to turn in assignments online. While this has no doubt made learning more efficient, it is worthwhile to ponder whether there are any alternative strategies that can be widely implemented that encourage students to spend more time away from their screens, practicing hobbies like art, sports, or music.
 
-DATA SOURCE DISCUSSION
+## DATA SOURCE DISCUSSION
 
 
 My data set it titled "The Effect of Screentime on the Mental Health of Children." This data is from 2020 and comes from the National Survey of Children's Health. This study measured weekday screen time, defined as time in front of a television, computer, mobile device, or other electronic tablet spent watching programming, playing games, accessing the internet, or using social media. The data in this survey is solicited every year by the U.S. Census Bureau and is funded by the HRSA (Health Resources & Services Administration). Approximately 360,000 addresses were sampled, using an instrument that screens and selects households, and eligible responses were received from just over 67,000. The questionnaire was administered by a professional knowledgeable about the health and health care of the given child. Households were able to complete the NSCH online, on paper, or over the phone in Spanish or English.
@@ -55,7 +51,7 @@ screen_time_v_mental_health
 
 The graph clearly shows that adolescents who spend a greater amount of time on their screens are more likely to seek treatment for their mental health. In fact, there is a clear upward trend: as the amount of screen time increases, the likelihood that a given individual has sought treatment increases as well. 
 
-RESULTS
+## RESULTS
 
 
 ```{r}
@@ -348,7 +344,7 @@ We can see from the table above that the intercept is around 0.01, which implies
 
 The coefficients in this table also have very small p-values (the p-value of both the intercept and screen time are less than 0.001), less than the alpha value of 0.05, which implies that these results are statistically significant. Since this study was conducted in a cross-sectional format, I do not believe that the relationship between screen time and mental health treatment can be interpreted causally here, though there is certainly a very strong correlation.
 
-CONCLUSION
+## CONCLUSION
 
 
 The results show a very strong relationship between screen time and mental health of children. There is a clear linear trend depicting that, with more time spent on screens, children are more likely to seek treatment for mental health. There are several limitations to and factors of consideration for this study. For example, this study was conducted during the COVID-19 pandemic and around the time of the 2020 presidential election, both of which may have been perceived as quite serious and emotionally disturbing occurrences, even to children. It is also worth noting that there may have been self-selection bias, given that survey respondents opted into the survey, or response bias, since many parent respondents may be in denial of how much they allow their children to spend online and would consequently under-report this value. With more time and money, it would be interesting to repeat this experiment at a more politically and socially neutral time (in order to minimize the effects of naturally mental health disorder inducing events). Furthermore, we could minimize responder bias by using an app or program that measures screen time objectively (like combining the "screen time" reports on iPhones in settings), rather than relying on parents to estimate off of top of mind.
