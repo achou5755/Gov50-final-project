@@ -12,11 +12,15 @@ output:
 ## Project thoughts
 
 INTRODUCTION
+
+
 Does screen time affect the mental health of children? The rise of social media apps like Instagram, TikTok, and Snapchat in the 21st century prematurely exposes school-age children to unprecedented content. I hypothesize that the more time children spend on their screens, the worse their mental health. On their screens, youth are exposed to a variety of triggers, including breaking news about climate change or politics, posts from friends exploring the world, and media produced by content creators who exemplify beauty standards. These conduce feelings of despair, FOMO, or self-hatred. 
 
 Adolescents remain a demographic most susceptible to experiencing mental health disorders like depression and anxiety. According to the CDC, suicide is one of the five leading causes of death among individuals aged 12 - 19. Should screentime be a significant factor that contributes to this phenomena, there is a clear need for society to peel teenagers from their screen. Currently, educational policies embrace technology: many students in high school and middle school are expected to conduct research using internet resources and to turn in assignments online. While this has no doubt made learning more efficient, it is worthwhile to ponder whether there are any alternative strategies that can be widely implemented that encourage students to spend more time away from their screens, practicing hobbies like art, sports, or music.
 
 DATA SOURCE DISCUSSION
+
+
 My data set it titled "The Effect of Screentime on the Mental Health of Children." This data is from 2020 and comes from the National Survey of Children's Health. This study measured weekday screen time, defined as time in front of a television, computer, mobile device, or other electronic tablet spent watching programming, playing games, accessing the internet, or using social media. The data in this survey is solicited every year by the U.S. Census Bureau and is funded by the HRSA (Health Resources & Services Administration). Approximately 360,000 addresses were sampled, using an instrument that screens and selects households, and eligible responses were received from just over 67,000. The questionnaire was administered by a professional knowledgeable about the health and health care of the given child. Households were able to complete the NSCH online, on paper, or over the phone in Spanish or English.
 
 Weekday screentime is the independent variable of this study and is measured in individuals ages 17 or younger. The dependent variable is mental health, which is measured by reported instances of mental health treatment or mental health treatment needed. If an adolescent sought or needed mental health treatment, this is considered as (1) in the data set; if the adolescent did not seek and did not need mental health treatment, this was counted as (0) in the data set. Both the independent and dependent variable were measured using survey methods in a cross-sectional study (the survey was distributed at a singular point in time).
@@ -71,6 +75,60 @@ When we examine the table that takes into account gender, there are slight devia
 
 ```{r}
 
+all_count <- file |>
+  group_by(Screentime, Sex) |>
+  summarize(n = n()) |>
+  ggplot(mapping = aes(x = factor(Screentime, screen_time), y = n, fill = Sex)) +
+  geom_col(position = "dodge") +
+  scale_fill_manual(values = c(Male = "cadetblue", Female = "cyan4")) +
+  labs(x = "Screen Time (hours)",
+       y = "Number of Respondents",
+       title = "Distribution of Respondents by Screentime"
+  )
+all_count
+
+```
+
+The graph shows that there was significant response from all categories, at least 2000 data points across each division of screen time for each gender (at least 4000 respondents in each independent variable category). 
+
+```{r}
+
+all_regression <- file |>
+  mutate(
+    treatment = if_else(Mental.Health.Treatment == "Needs Treatment", 1, 0)
+  ) |>
+  mutate(
+    numeric_screentime = case_when(
+      Screentime == "Less than 1 hour" ~ 0.5,
+      Screentime == "1 hour" ~ 1,
+      Screentime == "2 hours" ~ 2,
+      Screentime == "3 hours" ~ 3,
+      Screentime == "4 or more hours" ~ 4.5
+    )
+  )
+
+regression_4 <- lm(treatment ~ numeric_screentime, data = all_regression)
+
+varnames_1 <- c(
+  "(Intercept)" = "Intercept",
+  "numeric_screentime" = "Hourly Screentime"
+)
+
+modelsummary::modelsummary(
+    regression_4, 
+    statistic = "p.value",
+    gof_map = c("nobs", "r.squared", "adj.r.squared"),
+    coef_map = varnames_1)
+
+```
+Given that the survey asked for categorical responses (e.g. "less than 1 hour" or "4 or more hours"), this variable was turned into numerical times. Therefore, all teenagers in my data analysis were assigned screen times of 0.5 (corresponding to "less than 1 hour"), 1, 2, 3, or 4.5 (corresponding to "4 or more hours") hours. While there may be intrinsic flaws with this conversion (for example, "4 or more hours" includes 8 hours of screen time and "less than 1 hour" includes 15 minutes of screen time), this was a necessary step for synthesizing the data.
+
+We can see from the table above that the intercept is roughly 0.02, which implies that—when all other variables are 0, i.e. when a given individual under 18 years of age consistently does not spend any time on their screen on weekdays, approximately 2 percent of these individuals will still require or seek mental health treatment. The slope is about 0.045, which means that for every increased hour of screen time, approximately 4.5 percent more individuals require or seek mental health treatment. 
+
+The coefficients in this table have very small p-values (both less than 0.001), which is less than the alpha value of 0.05, implying that these results are statistically significant. Since this study was conducted in a cross-sectional format, I do not believe that the relationship between screen time and mental health treatment can be interpreted causally here, though there is certainly a very strong correlation. 
+
+```{r}
+
 teenagers <- file |>
   filter(Age..Years. >= 13) |>
   mutate(
@@ -110,7 +168,7 @@ teenagers_graph
 
 ```
 
-e can see that there is a significant upward trend: female teenagers with 4 or more hours of screen time are report twice as high rates of mental health treatment than their counterparts with screen times of less than 1 hour (approximately 0.32 and 0.16, respectively). It is interesting that the rates of mental health treatment decrease for teenagers from screen times of less than 1 hour to screen times of 1 hour, but otherwise there is a clear positive relationship between screen time and average need for mental health for teenagers. 
+We can see that there is an upward trend: female teenagers with 4 or more hours of screen time are report twice as high rates of mental health treatment than their counterparts with screen times of less than 1 hour (approximately 0.32 and 0.16, respectively). It is interesting that the rates of mental health treatment decrease for teenagers from screen times of less than 1 hour to screen times of 1 hour, but otherwise there is a clear positive relationship between screen time and average need for mental health for teenagers. 
 
 It is particularly interesting to note that rates of mental health treatment are higher for female teenagers than male teenagers, though the general positive applies for both genders. This is particularly evident for teenagers who spend 2, 3, or 4+ hours on screens. In fact, female teens who spend 4+ hours on screens are 10% more likely to require/seek mentla health treatment than their male teen counterparts.
 
@@ -141,9 +199,8 @@ modelsummary::modelsummary(
     coef_map = varnames_1)
 
 ```
-Given that the survey asked for categorical responses (e.g. "less than 1 hour" or "4 or more hours"), this variable was turned into numerical times. Therefore, all teenagers in my data analysis were assigned screen times of 0.5 (corresponding to "less than 1 hour"), 1, 2, 3, or 4.5 (corresponding to "4 or more hours") hours. While there may be intrinsic flaws with this conversion (for example, "4 or more hours" includes 8 hours of screen time and "less than 1 hour" includes 15 minutes of screen time), this was a necessary step for synthesizing the data.
 
-We can see from the table above that the intercept is roughly 0.07, which implies that—when all other variables are 0, i.e. when a given teenager consistently does not spend any time on their screen on weekdays, approximately 7 percent of these teenagers will still require or seek mental health treatment. This is the largest intercept of all three age groups, which suggests that teenagers have the largest baseline need for seeking mental health treatment. The slope is about 0.04, which means that for every increased hour of screen time, approximately 4 percent more teenagers require or seek mental health treatment. 
+We can see from the table above that the intercept is roughly 0.07, which implies that—when all other variables are 0, i.e. when a given teenager consistently does not spend any time on their screen on weekdays, approximately 7 percent of these teenagers will still require or seek mental health treatment. This is the largest intercept of all three age groups, which suggests that teenagers have the largest baseline need for seeking mental health treatment. The slope is about 0.04, which means that for every increased hour of screen time, approximately 4 percent more teenagers require or seek mental health treatment. This is the greatest slope across the three age groups, which also suggests that teenagers are most susceptible to the effects of screen time on mental health (if there is any causal effect).
 
 The coefficients in this table have very small p-values (both less than 0.001), less than the alpha value of 0.05, which implies that these results are statistically significant. Since this study was conducted in a cross-sectional format, I do not believe that the relationship between screen time and mental health treatment can be interpreted causally here, though there is certainly a very strong correlation.
 
@@ -222,7 +279,7 @@ The coefficients in this table also have very small p-values (the slope less tha
 ```{r}
 
 adolescents <- file |>
-  filter(Age..Years. > 6 | Age..Years. < 13) |>
+  filter(Age..Years. > 6 & Age..Years. < 13) |>
   mutate(
     treatment = if_else(Mental.Health.Treatment == "Needs Treatment", 1, 0)
   )
@@ -287,9 +344,11 @@ modelsummary::modelsummary(
 
 ```
 
-We can see from the table above that the intercept is around 0.02, which implies that—when all other variables are 0, i.e. when a given adolescent consistently does not spend any time on their screen on weekdays, only about 2 percent of these children will still require or seek mental health treatment. The slope is 0.045, which means that for every increased hour of screen time, approximately 4.5 percent more adolescents require or seek mental health treatment. Of the three age groups, this is the greatest slope, which suggests that the effects of screen time on mental health — if they are causal — are most severe for adolescents.
+We can see from the table above that the intercept is around 0.01, which implies that—when all other variables are 0, i.e. when a given adolescent consistently does not spend any time on their screen on weekdays, only about 1 percent of these children will still require or seek mental health treatment. The slope is 0.023, which means that for every increased hour of screen time, approximately 2.3 percent more adolescents require or seek mental health treatment.
 
 The coefficients in this table also have very small p-values (the p-value of both the intercept and screen time are less than 0.001), less than the alpha value of 0.05, which implies that these results are statistically significant. Since this study was conducted in a cross-sectional format, I do not believe that the relationship between screen time and mental health treatment can be interpreted causally here, though there is certainly a very strong correlation.
 
 CONCLUSION
+
+
 The results show a very strong relationship between screen time and mental health of children. There is a clear linear trend depicting that, with more time spent on screens, children are more likely to seek treatment for mental health. There are several limitations to and factors of consideration for this study. For example, this study was conducted during the COVID-19 pandemic and around the time of the 2020 presidential election, both of which may have been perceived as quite serious and emotionally disturbing occurrences, even to children. It is also worth noting that there may have been self-selection bias, given that survey respondents opted into the survey, or response bias, since many parent respondents may be in denial of how much they allow their children to spend online and would consequently under-report this value. With more time and money, it would be interesting to repeat this experiment at a more politically and socially neutral time (in order to minimize the effects of naturally mental health disorder inducing events). Furthermore, we could minimize responder bias by using an app or program that measures screen time objectively (like combining the "screen time" reports on iPhones in settings), rather than relying on parents to estimate off of top of mind.
